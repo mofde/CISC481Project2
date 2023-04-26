@@ -1,3 +1,6 @@
+from collections import deque
+from math import sqrt
+
 {('C11', 'C12'): [[1, 2],
                   [1, 3],
                   [1, 4],
@@ -58331,7 +58334,38 @@ def revise(csp, variableOneName, variableTwoName):
     return numChanges != 0
 
 def ac3(csp):
+    queue = deque()
+    constraintsList = list(csp.get("constraints").keys())
+    for constraint in constraintsList:
+        queue.append(constraint)
+    while len(queue) != 0:
+        constraint = queue.pop()
+        if revise(csp, constraint[0], constraint[1]):
+            if len(csp.get("variables").get(constraint[0])) == 0:
+                return False
+            for variable in list(csp.get("variables").keys()):
+                #neighbors in a row
+                if variable[1] == constraint[0][1] and variable != constraint[1]:
+                    queue.append((variable, constraint[0]))
+                #neighbors in a column
+                elif variable[2] == constraint[0][2] and variable != constraint[1]:
+                    queue.append((variable, constraint[0]))
+                #neighbors in a box
+                else:
+                    endX = sqrt(len(csp.get("variables").keys()))
+                    endY = sqrt(len(csp.get("variables").keys()))
+                    startX = 0
+                    startY = 0
+                    while (int(constraint[0][1]) < startX or int(constraint[0][1]) > endX):
+                        startX += sqrt(len(csp.get("variables").keys()))
+                        endX += sqrt(len(csp.get("variables").keys()))
+                    while (int(constraint[0][2]) < startY or int(constraint[0][2]) > endY):
+                        startY += sqrt(len(csp.get("variables").keys()))
+                        endY += sqrt(len(csp.get("variables").keys()))
+                    if int(variable[1]) > startX and int(variable[1]) <= endX and int(variable[2]) > startY and int(variable[2]) <= endY:
+                        queue.append((variable, constraint[0]))
+    return True
 
 if __name__ == "__main__":
     csp = {"variables": {"C11": [1], "C12": [1, 2], "C21": [1, 2], "C22": [1, 2]}, "constraints": {("C11", "C12"): [(1, 2), (2, 1)], ("C11", "C21"): [(1, 2), (2, 1)], ("C12", "C22"): [(1, 2), (2, 1)], ("C21", "C22"): [(1, 2), (2, 1)]}}
-    print(revise(csp, "C21", "C12"))
+    print(ac3(csp))
