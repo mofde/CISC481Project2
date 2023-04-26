@@ -58325,11 +58325,12 @@ def revise(csp, variableOneName, variableTwoName):
     for i in range(len(csp.get("variables").get(variableOneName))):
         for j in range(len(csp.get("variables").get(variableTwoName))):
             if csp.get("variables").get(variableOneName)[i] != csp.get("variables").get(variableTwoName)[j]:
-                newDomain.append(csp.get("variables").get(variableTwoName)[j])
-    numChanges = len(csp.get("variables").get(variableTwoName)) - len(newDomain)
-    newDomain = sorted(newDomain)
-    csp.get("variables")[variableTwoName] = newDomain
+                newDomain.append(csp.get("variables").get(variableOneName)[i])
+    numChanges = len(csp.get("variables").get(variableOneName)) - len(newDomain)
+    csp.get("variables")[variableOneName] = newDomain
     return numChanges != 0
+
+def ac3(csp):
 
 if __name__ == "__main__":
     csp = {"variables": {"C11": [1], "C12": [1, 2], "C21": [1, 2], "C22": [1, 2]}, "constraints": {("C11", "C12"): [(1, 2), (2, 1)], ("C11", "C21"): [(1, 2), (2, 1)], ("C12", "C22"): [(1, 2), (2, 1)], ("C21", "C22"): [(1, 2), (2, 1)]}}
