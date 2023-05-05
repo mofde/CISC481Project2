@@ -1,5 +1,7 @@
-from collections import deque
+from collections import OrderedDict, deque
+import copy
 from math import sqrt
+from flask import Flask
 
 {('C11', 'C12'): [[1, 2],
                   [1, 3],
@@ -58322,7 +58324,6 @@ from math import sqrt
                   [9, 7],
                   [9, 8]]}
 
-#check if time allows us
 def revise(csp, variableOneName, variableTwoName):
     newDomain = []
     for i in range(len(csp.get("variables").get(variableOneName))):
@@ -58330,14 +58331,16 @@ def revise(csp, variableOneName, variableTwoName):
             if csp.get("variables").get(variableOneName)[i] != csp.get("variables").get(variableTwoName)[j]:
                 newDomain.append(csp.get("variables").get(variableOneName)[i])
     numChanges = len(csp.get("variables").get(variableOneName)) - len(newDomain)
-    csp.get("variables")[variableOneName] = newDomain
+    if len(csp.get("variables")[variableOneName]) > 1:
+        csp.get("variables")[variableOneName] = newDomain
     return numChanges != 0
 
 def ac3(csp):
     queue = deque()
     constraintsList = list(csp.get("constraints").keys())
     for constraint in constraintsList:
-        queue.append(constraint)
+        queue.appendleft(constraint)
+        queue.appendleft((constraint[1], constraint[0]))
     while len(queue) != 0:
         constraint = queue.pop()
         if revise(csp, constraint[0], constraint[1]):
@@ -58346,25 +58349,44 @@ def ac3(csp):
             for variable in list(csp.get("variables").keys()):
                 #neighbors in a row
                 if variable[1] == constraint[0][1] and variable != constraint[1]:
-                    queue.append((variable, constraint[0]))
+                    queue.appendleft((variable, constraint[0]))
                 #neighbors in a column
                 elif variable[2] == constraint[0][2] and variable != constraint[1]:
-                    queue.append((variable, constraint[0]))
-                #neighbors in a box
-                else:
-                    endX = sqrt(len(csp.get("variables").keys()))
-                    endY = sqrt(len(csp.get("variables").keys()))
-                    startX = 0
-                    startY = 0
-                    while (int(constraint[0][1]) < startX or int(constraint[0][1]) > endX):
-                        startX += sqrt(len(csp.get("variables").keys()))
-                        endX += sqrt(len(csp.get("variables").keys()))
-                    while (int(constraint[0][2]) < startY or int(constraint[0][2]) > endY):
-                        startY += sqrt(len(csp.get("variables").keys()))
-                        endY += sqrt(len(csp.get("variables").keys()))
-                    if int(variable[1]) > startX and int(variable[1]) <= endX and int(variable[2]) > startY and int(variable[2]) <= endY:
-                        queue.append((variable, constraint[0]))
+                    queue.appendleft((variable, constraint[0]))
     return True
+
+def minimumRemainingValues(csp, assignments):
+    for variable in assignments.keys():
+        csp["variables"][variable] = assignments.get(variable)
+    minLength = int(sqrt(len(csp["variables"].keys())))
+    finalVariable = ""
+    for variable in csp["variables"].keys():
+        if len(csp["variables"].get(variable)) <= minLength and len(csp["variables"].get(variable)) > 1:
+            minLength = len(csp["variables"].get(variable))
+            finalVariable = variable
+    return finalVariable
+
+def backtrack(csp, assignment):
+    #what does it mean for an assignment to be considered complete? What would be the code to show this?
+    if len(assignment.keys()) == len(csp["variables"].keys()):
+        return assignment
+    var = minimumRemainingValues(csp, assignment)
+    for value in assignment[var]:
+        oldDomains = copy.deepcopy(csp["variables"])
+        csp["variables"][var] = [value]
+        if ac3(csp):
+            assignment[var] = [value]
+            result = backtrack(csp, assignment)
+            if result != None:
+                return result
+        del assignment[var]
+        csp["variables"] = oldDomains
+    return None
+
+def backtrackingSearch(csp):
+    return backtrack(csp, OrderedDict())
+
+#how would i implement the web-based visualization of my backtracking search?
 
 if __name__ == "__main__":
     csp = {"variables": {"C11": [1], "C12": [1, 2], "C21": [1, 2], "C22": [1, 2]}, "constraints": {("C11", "C12"): [(1, 2), (2, 1)], ("C11", "C21"): [(1, 2), (2, 1)], ("C12", "C22"): [(1, 2), (2, 1)], ("C21", "C22"): [(1, 2), (2, 1)]}}
