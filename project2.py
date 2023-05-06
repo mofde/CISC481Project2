@@ -2,6 +2,7 @@ from collections import OrderedDict, deque
 import copy
 from math import sqrt
 from flask import Flask
+app = Flask(__name__)
 
 {('C11', 'C12'): [[1, 2],
                   [1, 3],
@@ -58388,7 +58389,3 @@ def backtrack(csp, assignment):
 
 def backtrackingSearch(csp):
     return backtrack(csp, OrderedDict())
-
-if __name__ == "__main__":
-    csp = {"variables": {"C11": [1], "C12": [1, 2], "C21": [1, 2], "C22": [1, 2]}, "constraints": {("C11", "C12"): [(1, 2), (2, 1)], ("C11", "C21"): [(1, 2), (2, 1)], ("C12", "C22"): [(1, 2), (2, 1)], ("C21", "C22"): [(1, 2), (2, 1)]}}
-    print(backtrackingSearch(csp))
