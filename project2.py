@@ -58346,13 +58346,13 @@ def ac3(csp):
         if revise(csp, constraint[0], constraint[1]):
             if len(csp.get("variables").get(constraint[0])) == 0:
                 return False
-            for variable in list(csp.get("variables").keys()):
+            for variable in csp.get("constraints"):
                 #neighbors in a row
-                if variable[1] == constraint[0][1] and variable != constraint[1]:
-                    queue.appendleft((variable, constraint[0]))
+                if variable[1] == constraint[0] and variable[0] != constraint[1]:
+                    queue.appendleft(variable)
                 #neighbors in a column
-                elif variable[2] == constraint[0][2] and variable != constraint[1]:
-                    queue.appendleft((variable, constraint[0]))
+                elif variable[0] == constraint[0] and variable[1] != constraint[1]:
+                    queue.appendleft((variable[1], constraint[0]))
     return True
 
 def minimumRemainingValues(csp, assignments):
@@ -58367,11 +58367,14 @@ def minimumRemainingValues(csp, assignments):
     return finalVariable
 
 def backtrack(csp, assignment):
-    #what does it mean for an assignment to be considered complete? What would be the code to show this?
-    if len(assignment.keys()) == len(csp["variables"].keys()):
+    numFilledTiles = 0
+    for variable in csp.get("variables").keys():
+        if len(csp.get("variables").get(variable)) == 1:
+            numFilledTiles += 1
+    if numFilledTiles == len(csp["variables"].keys()):
         return assignment
     var = minimumRemainingValues(csp, assignment)
-    for value in assignment[var]:
+    for value in csp["variables"][var]:
         oldDomains = copy.deepcopy(csp["variables"])
         csp["variables"][var] = [value]
         if ac3(csp):
@@ -58386,8 +58389,6 @@ def backtrack(csp, assignment):
 def backtrackingSearch(csp):
     return backtrack(csp, OrderedDict())
 
-#how would i implement the web-based visualization of my backtracking search?
-
 if __name__ == "__main__":
     csp = {"variables": {"C11": [1], "C12": [1, 2], "C21": [1, 2], "C22": [1, 2]}, "constraints": {("C11", "C12"): [(1, 2), (2, 1)], ("C11", "C21"): [(1, 2), (2, 1)], ("C12", "C22"): [(1, 2), (2, 1)], ("C21", "C22"): [(1, 2), (2, 1)]}}
-    print(ac3(csp))
+    print(backtrackingSearch(csp))
