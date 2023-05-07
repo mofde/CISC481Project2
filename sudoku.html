@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Sudoku</title>
+    <style>
+      table {
+        border: 3px solid black;
+        border-collapse: collapse;
+      }
+
+      tr {
+        padding: 0;
+      }
+
+      td {
+        width: 64px;
+        height: 64px;
+        padding: 0;
+        border: 1px solid gray;
+        text-align: center;
+        vertical-align: center;
+        font-size: 1.5em;
+      }
+
+      input {
+        font-size: 1em;
+        /*border: 0;*/
+      }
+
+      tr.box-bottom td {
+        border-bottom: 3px solid black;
+      }
+
+      td.box-side {
+        border-right: 3px solid black;
+      }
+    </style>
+    <body>
+        <table>
+            <tbody>
+                <tr>
+                    <td class="box-side">1</td>
+                    <td>
+                        <input type="text" size="1" fdprocessedid="svv30m">
+                    </td>
+                </tr>
+                <tr class="box-bottom">
+                    <td class="box-side">
+                        <input type="text" size="1" fdprocessedid="y1nqj9">
+                    </td>
+                    <td>
+                        <input type="text" size="1" fdprocessedid="vxtp1v">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </body>
+  </head>
+</html>
