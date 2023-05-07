@@ -1,9 +1,3 @@
-from collections import OrderedDict, deque
-import copy
-from math import sqrt
-from flask import Flask, render_template
-app = Flask(__name__)
-
 {('C11', 'C12'): [[1, 2],
                   [1, 3],
                   [1, 4],

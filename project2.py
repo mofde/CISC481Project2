@@ -1,7 +1,7 @@
 from collections import OrderedDict, deque
 import copy
 from math import sqrt
-from flask import Flask, render_template
+from flask import Flask, app, render_template
 
 def revise(csp, variableOneName, variableTwoName):
     newDomain = []
@@ -68,6 +68,6 @@ def backtrack(csp, assignment):
 def backtrackingSearch(csp):
     return backtrack(csp, OrderedDict())
 
-app.route("/")
+@app.route("/")
 def webDesign():
     return render_template("sudoku.html", message="web design")
