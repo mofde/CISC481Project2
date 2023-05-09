@@ -1,7 +1,7 @@
 from collections import OrderedDict, deque
 import copy
 from math import sqrt
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 app = Flask(__name__)
 
 def revise(csp, variableOneName, variableTwoName):
@@ -41,7 +41,9 @@ def minimumRemainingValues(csp, assignments):
     minLength = int(sqrt(len(csp["variables"].keys())))
     finalVariable = ""
     for variable in csp["variables"].keys():
-        if len(csp["variables"].get(variable)) <= minLength and len(csp["variables"].get(variable)) > 1:
+        if (len(csp["variables"].get(variable)) == minLength and finalVariable != ""):
+            continue
+        elif len(csp["variables"].get(variable)) <= minLength and len(csp["variables"].get(variable)) > 1:
             minLength = len(csp["variables"].get(variable))
             finalVariable = variable
     return finalVariable
@@ -71,7 +73,20 @@ def backtrackingSearch(csp):
 
 @app.route('/')
 def createWebsite():
-    return render_template("sudoku.html")
+    return render_template('sudoku.html')
+
+@app.route('/', methods=['POST'])
+def saveSudoku():
+    csp = {"variables": {},
+       "constraints": {("C11", "C12"): [(1, 2), (2, 1)],
+                       ("C11", "C21"): [(1, 2), (2, 1)],
+                       ("C12", "C22"): [(1, 2), (2, 1)],
+                       ("C21", "C22"): [(1, 2), (2, 1)]}}
+    initialBoard = [[[request.form["C11"], request.form["C12"]],
+                     [request.form["C21"], request.form["C22"]]],
+                    [[request.form["C11"], request.form["C12"]],
+                     [request.form["C21"], request.form["C22"]]]]
+    return render_template('savedSudoku.html', initialBoard=initialBoard)
 
 if __name__ == "__main__":
     app.debug = True
