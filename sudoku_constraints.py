@@ -1,4 +1,4 @@
-constraints = {('C11', 'C12'): [[1, 2],
+nineByNineConstraints = {('C11', 'C12'): [[1, 2],
                   [1, 3],
                   [1, 4],
                   [1, 5],

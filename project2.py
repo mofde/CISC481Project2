@@ -2,6 +2,8 @@ from collections import OrderedDict, deque
 import copy
 from math import sqrt
 from flask import Flask, render_template, request
+from ast import literal_eval
+import sudoku_constraints
 app = Flask(__name__)
 
 def revise(csp, variableOneName, variableTwoName):
@@ -10,6 +12,7 @@ def revise(csp, variableOneName, variableTwoName):
         for j in range(len(csp.get("variables").get(variableTwoName))):
             if csp.get("variables").get(variableOneName)[i] != csp.get("variables").get(variableTwoName)[j]:
                 newDomain.append(csp.get("variables").get(variableOneName)[i])
+                break
     numChanges = len(csp.get("variables").get(variableOneName)) - len(newDomain)
     if len(csp.get("variables")[variableOneName]) > 1:
         csp.get("variables")[variableOneName] = newDomain
@@ -38,12 +41,10 @@ def ac3(csp):
 def minimumRemainingValues(csp, assignments):
     for variable in assignments.keys():
         csp["variables"][variable] = assignments.get(variable)
-    minLength = int(sqrt(len(csp["variables"].keys())))
+    minLength = int(sqrt(len(csp["variables"].keys()))) + 1
     finalVariable = ""
     for variable in csp["variables"].keys():
-        if (len(csp["variables"].get(variable)) == minLength and finalVariable != ""):
-            continue
-        elif len(csp["variables"].get(variable)) <= minLength and len(csp["variables"].get(variable)) > 1:
+        if len(csp["variables"].get(variable)) < minLength and len(csp["variables"].get(variable)) > 1:
             minLength = len(csp["variables"].get(variable))
             finalVariable = variable
     return finalVariable
@@ -53,6 +54,8 @@ def backtrack(csp, assignment):
     for variable in csp.get("variables").keys():
         if len(csp.get("variables").get(variable)) == 1:
             numFilledTiles += 1
+    #if len(assignment) == len(csp.get("variables").keys()):
+        #return assignment
     if numFilledTiles == len(csp["variables"].keys()):
         return assignment
     var = minimumRemainingValues(csp, assignment)
@@ -60,7 +63,7 @@ def backtrack(csp, assignment):
         oldDomains = copy.deepcopy(csp["variables"])
         csp["variables"][var] = [value]
         if ac3(csp):
-            assignment[var] = [value]
+            assignment[var] = value
             result = backtrack(csp, assignment)
             if result != None:
                 return result
@@ -73,20 +76,31 @@ def backtrackingSearch(csp):
 
 @app.route('/')
 def createWebsite():
-    return render_template('sudoku.html')
+    return render_template('form.html')
 
-@app.route('/', methods=['POST'])
+@app.route('/solve')
 def saveSudoku():
-    csp = {"variables": {},
-       "constraints": {("C11", "C12"): [(1, 2), (2, 1)],
-                       ("C11", "C21"): [(1, 2), (2, 1)],
-                       ("C12", "C22"): [(1, 2), (2, 1)],
-                       ("C21", "C22"): [(1, 2), (2, 1)]}}
-    initialBoard = [[[request.form["C11"], request.form["C12"]],
-                     [request.form["C21"], request.form["C22"]]],
-                    [[request.form["C11"], request.form["C12"]],
-                     [request.form["C21"], request.form["C22"]]]]
-    return render_template('savedSudoku.html', initialBoard=initialBoard)
+    csp = {"variables": {}, "constraints": sudoku_constraints.nineByNineConstraints}
+    board = [[None for row in range(9)] for col in range(9)]
+    for row in range(9):
+        for col in range(9):
+            var = "C{}{}".format(row+1, col+1)
+            val = request.args[var]
+            val = int(val) if val else val
+            board[row][col] = val
+            if val:
+                csp["variables"][var] = [val]
+            else:
+                csp["variables"][var] = list(range(1, 10))
+    boards = [board]
+    solution = backtrackingSearch(csp)
+    for var in solution:
+        board = copy.deepcopy(board)
+        row = int(var[1])
+        col = int(var[2])
+        board[row-1][col-1] = solution[var]
+        boards.append(board)
+    return render_template('savedSudoku.html', boards=boards)
 
 if __name__ == "__main__":
     app.debug = True

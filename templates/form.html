@@ -1,0 +1,143 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Sudoku Time!</title>
+  <style>
+    table {
+        border: 3px solid black;
+        border-collapse: collapse;
+    }
+
+    tr {
+        padding: 0;
+    }
+
+    td {
+        width: 64px;
+        height: 64px;
+        padding: 0;
+        border: 1px solid gray;
+        text-align: center;
+        vertical-align: center;
+        font-size: 1.5em;
+    }
+
+    input {
+        font-size: 1em;
+        /*border: 0;*/
+    }
+
+    tr.box-bottom td {
+        border-bottom: 3px solid black;
+    }
+
+    td.box-side {
+        border-right: 3px solid black;
+    }
+  </style>
+</head>
+<body>
+  <h1>Sudoku Time!</h1>
+  <form method="get" action="/solve">
+  <table>
+    <tr>
+      <td><input type="text" name="C11" size="1"></td>
+      <td><input type="text" name="C12" size="1"></td>
+      <td class="box-side"><input type="text" name="C13" size="1"></td>
+      <td><input type="text" name="C14" size="1"></td>
+      <td><input type="text" name="C15" size="1"></td>
+      <td class="box-side"><input type="text" name="C16" size="1"></td>
+      <td><input type="text" name="C17" size="1"></td>
+      <td><input type="text" name="C18" size="1"></td>
+      <td class="box-side"><input type="text" name="C19" size="1"></td>
+    </tr>
+      <td><input type="text" name="C21" size="1"></td>
+      <td><input type="text" name="C22" size="1"></td>
+      <td class="box-side"><input type="text" name="C23" size="1"></td>
+      <td><input type="text" name="C24" size="1"></td>
+      <td><input type="text" name="C25" size="1"></td>
+      <td class="box-side"><input type="text" name="C26" size="1"></td>
+      <td><input type="text" name="C27" size="1"></td>
+      <td><input type="text" name="C28" size="1"></td>
+      <td class="box-side"><input type="text" name="C29" size="1"></td>
+    </tr>
+    <tr class="box-bottom">
+      <td><input type="text" name="C31" size="1"></td>
+      <td><input type="text" name="C32" size="1"></td>
+      <td class="box-side"><input type="text" name="C33" size="1"></td>
+      <td><input type="text" name="C34" size="1"></td>
+      <td><input type="text" name="C35" size="1"></td>
+      <td class="box-side"><input type="text" name="C36" size="1"></td>
+      <td><input type="text" name="C37" size="1"></td>
+      <td><input type="text" name="C38" size="1"></td>
+      <td class="box-side"><input type="text" name="C39" size="1"></td>
+    </tr>
+      <td><input type="text" name="C41" size="1"></td>
+      <td><input type="text" name="C42" size="1"></td>
+      <td class="box-side"><input type="text" name="C43" size="1"></td>
+      <td><input type="text" name="C44" size="1"></td>
+      <td><input type="text" name="C45" size="1"></td>
+      <td class="box-side"><input type="text" name="C46" size="1"></td>
+      <td><input type="text" name="C47" size="1"></td>
+      <td><input type="text" name="C48" size="1"></td>
+      <td class="box-side"><input type="text" name="C49" size="1"></td>
+    </tr>
+      <td><input type="text" name="C51" size="1"></td>
+      <td><input type="text" name="C52" size="1"></td>
+      <td class="box-side"><input type="text" name="C53" size="1"></td>
+      <td><input type="text" name="C54" size="1"></td>
+      <td><input type="text" name="C55" size="1"></td>
+      <td class="box-side"><input type="text" name="C56" size="1"></td>
+      <td><input type="text" name="C57" size="1"></td>
+      <td><input type="text" name="C58" size="1"></td>
+      <td class="box-side"><input type="text" name="C59" size="1"></td>
+    </tr>
+      <tr class="box-bottom">
+      <td><input type="text" name="C61" size="1"></td>
+      <td><input type="text" name="C62" size="1"></td>
+      <td class="box-side"><input type="text" name="C63" size="1"></td>
+      <td><input type="text" name="C64" size="1"></td>
+      <td><input type="text" name="C65" size="1"></td>
+      <td class="box-side"><input type="text" name="C66" size="1"></td>
+      <td><input type="text" name="C67" size="1"></td>
+      <td><input type="text" name="C68" size="1"></td>
+      <td class="box-side"><input type="text" name="C69" size="1"></td>
+    </tr>
+      <td><input type="text" name="C71" size="1"></td>
+      <td><input type="text" name="C72" size="1"></td>
+      <td class="box-side"><input type="text" name="C73" size="1"></td>
+      <td><input type="text" name="C74" size="1"></td>
+      <td><input type="text" name="C75" size="1"></td>
+      <td class="box-side"><input type="text" name="C76" size="1"></td>
+      <td><input type="text" name="C77" size="1"></td>
+      <td><input type="text" name="C78" size="1"></td>
+      <td class="box-side"><input type="text" name="C79" size="1"></td>
+    </tr>
+      <td><input type="text" name="C81" size="1"></td>
+      <td><input type="text" name="C82" size="1"></td>
+      <td class="box-side"><input type="text" name="C83" size="1"></td>
+      <td><input type="text" name="C84" size="1"></td>
+      <td><input type="text" name="C85" size="1"></td>
+      <td class="box-side"><input type="text" name="C86" size="1"></td>
+      <td><input type="text" name="C87" size="1"></td>
+      <td><input type="text" name="C88" size="1"></td>
+      <td class="box-side"><input type="text" name="C89" size="1"></td>
+    </tr>
+      <td><input type="text" name="C91" size="1"></td>
+      <td><input type="text" name="C92" size="1"></td>
+      <td class="box-side"><input type="text" name="C93" size="1"></td>
+      <td><input type="text" name="C94" size="1"></td>
+      <td><input type="text" name="C95" size="1"></td>
+      <td class="box-side"><input type="text" name="C96" size="1"></td>
+      <td><input type="text" name="C97" size="1"></td>
+      <td><input type="text" name="C98" size="1"></td>
+      <td class="box-side"><input type="text" name="C99" size="1"></td>
+    </tr>
+  </table>
+   <input type="submit">
+  </form>
+ 
+</body>
+</html>

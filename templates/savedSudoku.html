@@ -1,54 +1,71 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8" />
-        <title>Sudoku</title>
-        <style>
-          table {
-            border: 3px solid black;
-            border-collapse: collapse;
-          }
-    
-          tr {
-            padding: 0;
-          }
-    
-          td {
-            width: 64px;
-            height: 64px;
-            padding: 0;
-            border: 1px solid gray;
-            text-align: center;
-            vertical-align: center;
-            font-size: 1.5em;
-          }
-    
-          input {
-            font-size: 1em;
-            /*border: 0;*/
-          }
-    
-          tr.box-bottom td {
-            border-bottom: 3px solid black;
-          }
-    
-          td.box-side {
-            border-right: 3px solid black;
-          }
-        </style>
-        <body>
-            {% for board in initialBoard %}
-                <table style='margin-left: auto; margin-right: auto;'>
-                    {% for row in board %}
-                        <tr>
-                            {% for cell in row %}
-                                <td>{{ cell }}</td>
-                            {% endfor %}
-                        </tr>
-                    {% endfor %}
-                </table>
-            <br>
-            {% endfor %}
-        </body>
-        </head>
+  <head>
+    <link rel="icon" href="data:,">
+    <meta charset="utf-8" />
+    <title>Sudoku</title>
+    <style>
+      table {
+        border: 3px solid black;
+        border-collapse: collapse;
+      }
+
+      tr {
+        padding: 0;
+      }
+
+      td {
+        width: 64px;
+        height: 64px;
+        padding: 0;
+        border: 1px solid gray;
+        text-align: center;
+        vertical-align: center;
+        font-size: 1.5em;
+      }
+
+      input {
+        font-size: 1em;
+        /*border: 0;*/
+      }
+
+      tr.box-bottom td {
+        border-bottom: 3px solid black;
+      }
+
+      td.box-side {
+        border-right: 3px solid black;
+      }
+    </style>
+  </head>
+  <body>
+    {% for board in boards %}
+      <table style='margin-left: auto; margin-right: auto;'>
+        {% for row in board %}
+          {% if loop.index % 3 == 0 %}
+            <tr class='box-bottom'>
+              {% for cell in row %}
+                {% if loop.index % 3 == 0 %}
+                  <td class='box-side'>{{ cell }}</td>
+                {% else %}
+                  <td>{{ cell }}</td>
+                {% endif %}
+              {% endfor %}
+            </tr>
+          {% else %}
+            <tr>
+              {% for cell in row %}
+                {% if loop.index % 3 == 0 %}
+                  <td class='box-side'>{{ cell }}</td>
+                {% else %}
+                  <td>{{ cell }}</td>
+                {% endif %}
+              {% endfor %}
+            </tr>
+          {% endif %}
+        {% endfor %}
+      </table>
+      <br>
+    {% endfor %}
+  </body>
 </html>
